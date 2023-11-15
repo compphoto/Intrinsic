@@ -16,23 +16,22 @@ dictions and multi-illumination data, enabling generalization to in-the-wild
 imagery.
 
 ## Setup
-Depending on how you would like to use the code in this repository there are two options to setup the code:
+Depending on how you would like to use the code in this repository there are two options to setup the code.
+In either case, you should first create a fresh virtual environment (`python3 -m venv intrinsic_env`) and start it (`source intrinsic_env/bin/activate`)
 
 #### Option 1
-If you would like to download the repository to run and potentially make changes you can simply clone the repo:
+If you would like to download the repository to run and make changes you can simply clone the repo:
 ```
 git clone https://github.com/compphoto/Intrinsic
 cd Intrinsic
 ```
-create a new virtual environment, or use an existing one, and run:
+then pip install all the dependencies of the repo:
 ```
 pip install -r requirements.txt 
 ```
-It's probably best to first create a fresh virtual environment to avoid version clashes. 
-
 
 #### Option 2
-Alternatively, you can install this repository as a package using `setup.py` 
+Alternatively, you can install this repository as a package using `setup.py`:
 ```
 git clone https://github.com/compphoto/Intrinsic
 cd Intrinsic
