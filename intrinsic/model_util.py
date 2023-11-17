@@ -2,13 +2,13 @@ import torch
 from altered_midas.midas_net import MidasNet
 from altered_midas.midas_net_custom import MidasNet_small
 
-def load_models(ord_path, mrg_path, device='cuda'):
+def load_models(ord_path, iid_path, device='cuda'):
     """Load the ordinal network and the intrinsic decomposition network
        into a dictionary that can be used to run our pipeline
 
     params:
-        ord_path (str): the path to the weights file for the ord model
-        mrg_path (str): the path to the weights file for the mrg model
+        ord_path (str): the path to the weights file for the ordinal model
+        iid_path (str): the path to the weights file for the intrinsic decomposition model
         device (str) optional: the device to run the model on (default "cuda")
 
     returns:
@@ -23,13 +23,13 @@ def load_models(ord_path, mrg_path, device='cuda'):
     ord_model.eval()
     ord_model = ord_model.to(device)
 
-    mrg_model = MidasNet_small(exportable=False, input_channels=5, output_channels=1)
-    mrg_model.load_state_dict(torch.load(mrg_path))
-    mrg_model.eval()
-    mrg_model = mrg_model.to(device)
+    iid_model = MidasNet_small(exportable=False, input_channels=5, output_channels=1)
+    iid_model.load_state_dict(torch.load(iid_path))
+    iid_model.eval()
+    iid_model = iid_model.to(device)
 
     models['ordinal_model'] = ord_model
-    models['real_model'] = mrg_model
+    models['real_model'] = iid_model
 
     return models
 

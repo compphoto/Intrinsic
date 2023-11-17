@@ -9,5 +9,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     license="",
     python_requires=">3.6",
-    install_requires=[]
+    install_requires=[
+    'altered_midas @ git+https://github.com/CCareaga/MiDaS@master',
+    'chrislib @ git+https://github.com/CCareaga/chrislib@main'
+    ]
 )
