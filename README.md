@@ -35,8 +35,8 @@ using only a single network.
 
 ![network_pipeline_circles](https://github.com/compphoto/Intrinsic/assets/3434597/11462c08-8eee-43c9-b425-a02b47857881)
 
-We train our method on multiple rendered dataset. In order to generate real-world supervision for our method we use multi-illumination data. 
-Using our pipeline we estimate albedo for each image in a given multi-illumination scene. By taking the median across these albedo estimations, small errors are removed resulting in a single accurate albedo.
+We train our method on multiple rendered datasets. In order to generate real-world supervision for our method we use multi-illumination data. 
+Using our pipeline we estimate the albedo for each image in a given multi-illumination scene. By taking the median across these albedo estimations, small errors are removed resulting in a single accurate albedo.
 We use these 25,000 pseudo-ground-truth pairs as training data and continue training our pipeline.
 
 ![multi_illum_examples](https://github.com/compphoto/Intrinsic/assets/3434597/05984ff7-f481-4c0c-a156-48eb966a0505)
@@ -72,11 +72,10 @@ Or perform the same action without cloning the code using:
 ```
 pip install https://github.com/compphoto/Intrinsic/archive/master.zip
 ```
-This will allow you to import the repository as a python package, and use our pipeline as part of your codebase.
+This will allow you to import the repository as a Python package, and use our pipeline as part of your codebase.
 
 ## Inference
 To run our pipeline on your own images you can use the decompose script:
 ```
 
 ```
-![intro_itw_comp_2](https://github.com/compphoto/Intrinsic/assets/3434597/1a25186b-56bb-4bd9-b052-b568ea96ff38)
