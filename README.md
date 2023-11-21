@@ -4,6 +4,9 @@ Code for the paper: Intrinsic Image Decomposition via Ordinal Shading, [Chris Ca
 
 We propose a method for generating high-resolution intrinsic image decompositions, for in-the-wild images. Our method relies on a carefully formulated ordinal shading representation, and real-world supervision from multi-illumination data in order to predict highly accurate albedo and shading. 
 
+[![YouTube Video](./figures/thumbnail.jpg)](https://www.youtube.com/watch?v=pWtJd3hqL3c)
+
+
 Try out our pipeline on your own images! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb)
 
 ## Method
