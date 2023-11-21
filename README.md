@@ -38,7 +38,7 @@ To generate a final shading estimation we combine two ordinal estimations, at lo
 We use the final shading estimation, and the input image in order to compute our estimated albedo. This allows us to compute losses on both shading and albedo while
 using only a single network.
 
-![network_pipeline_circles](./figures/network_pipeline_circles.png)
+![network_pipeline_circles](./figures/network_pipeline_circles.jpg)
 
 We train our method on multiple rendered datasets. In order to generate real-world supervision for our method we use multi-illumination data. 
 Using our pipeline we estimate the albedo for each image in a given multi-illumination scene. By taking the median across these albedo estimations, small errors are removed resulting in a single accurate albedo.
