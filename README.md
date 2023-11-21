@@ -50,35 +50,50 @@ Our method can be used for complex image editing tasks such as recoloring and re
 Depending on how you would like to use the code in this repository there are two options to setup the code.
 In either case, you should first create a fresh virtual environment (`python3 -m venv intrinsic_env`) and start it (`source intrinsic_env/bin/activate`)
 
-#### Option 1
-If you would like to download the repository to run and make changes you can simply clone the repo:
+You can install this repository as a package using `pip`:
 ```
 git clone https://github.com/compphoto/Intrinsic
 cd Intrinsic
+pip install .
 ```
-then pip install all the dependencies of the repo:
-```
-pip install -r requirements.txt 
-```
-
-#### Option 2
-Alternatively, you can install this repository as a package using `setup.py`:
-```
-git clone https://github.com/compphoto/Intrinsic
-cd Intrinsic
-python setup.py
-```
+If you want to make changes to the code and have it reflected when you import the package use `pip install --editable`
 Or perform the same action without cloning the code using:
 ```
-pip install https://github.com/compphoto/Intrinsic/archive/master.zip
+pip install https://github.com/compphoto/Intrinsic/archive/main.zip
 ```
 This will allow you to import the repository as a Python package, and use our pipeline as part of your codebase.
 
 ## Inference
 To run our pipeline on your own images you can use the decompose script:
-```
+```python
+from chrislib.general import view, tile_imgs, view_scale, uninvert
+from chrislib.data_util import load_image
+
+from intrinsic.pipeline import run_pipeline
+from intrinsic.model_util import load_models
+
+# load the models from the given paths
+models = load_models('final_weights.pt')
+
+# load an image (np float array in [0-1])
+image = load_image('/path/to/input/image')
+
+# run the model on the image using R_0 resizing
+results = run_pipeline(
+    models,
+    image,
+    resize_conf=0.0,
+    maintain_size=True
+)
+
+albedo = results['albedo']
+inv_shd = results['inv_shading']
+
+# compute shading from inverse shading
+shading = uninvert(inv_shd)
 
 ```
+This will run our pipeline and output the linear albedo and shading.
 
 ## Citation
 
