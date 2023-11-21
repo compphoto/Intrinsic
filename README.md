@@ -9,41 +9,41 @@ The inherently under-constrained and scale-invariant nature of the intrinsic dec
 Shading, which represents complex interactions in the scene, is difficult for neural networks to predict. 
 Compounded by the scarcity of dense ground-truth data, state-of-the-art models fail at high resolutions in real-world scenarios.
 
-![intro_itw_comp_avo](https://github.com/compphoto/Intrinsic/assets/3434597/4bbe3f96-27d8-40a2-b9c7-662ee7a62591)
+![intro_itw_comp_avo](./figures/intro_itw_comp_avo.png)
 
 Our method focuses on generating high-resolution shading estimations, rather than attempting to estimate shading and albedo separately. 
 Since shading values are unbounded, we develop a representation of shading values called "inverse shading" which maps the shading values into the zero-one range.
 This creates a balanced distribution of values in a well-defined range that is desirable for training neural networks.
 
-![ordinal_shd_rep](https://github.com/compphoto/Intrinsic/assets/3434597/c0554c5a-371a-487e-89f5-49b4bbc65c65)
+![ordinal_shd_rep](./figures/ordinal_shd_rep.jpg)
 
 Rather than directly regressing the inverse shading values, we relax the problem and aim to predict *ordinal* shading values.
 To do this, we train our network using shift- and scale-invariant loss functions. 
 This simplifies the task of shading estimation as the model does not need to estimate precise values that satisfy the core intrinsic decomposition model
 
-![ord_behavior_itw](https://github.com/compphoto/Intrinsic/assets/3434597/2910582c-6c5f-4179-991e-98208e194889)
+![ord_behavior_itw](./figures/ord_behavior_itw.png)
 
 Our ordinal estimations exhibit specific behaviors at different resolutions. 
 At low resolutions, the model can generate globally coherent predictions, but the outputs lack details.
 At high resolutions, the model can predict fine local details, but at the cost of global coherency. 
 
-![pool_table](https://github.com/compphoto/Intrinsic/assets/3434597/add57fab-aa10-4f25-a40c-613be20e2304)
+![pool_table](./figures/pool_table.png)
 
 To generate a final shading estimation we combine two ordinal estimations, at low and high resolutions, with the input image and send them through a second network.
 We use the final shading estimation, and the input image in order to compute our estimated albedo. This allows us to compute losses on both shading and albedo while
 using only a single network.
 
-![network_pipeline_circles](https://github.com/compphoto/Intrinsic/assets/3434597/11462c08-8eee-43c9-b425-a02b47857881)
+![network_pipeline_circles](./figures/network_pipeline_circles.png)
 
 We train our method on multiple rendered datasets. In order to generate real-world supervision for our method we use multi-illumination data. 
 Using our pipeline we estimate the albedo for each image in a given multi-illumination scene. By taking the median across these albedo estimations, small errors are removed resulting in a single accurate albedo.
 We use these 25,000 pseudo-ground-truth pairs as training data and continue training our pipeline.
 
-![multi_illum_examples](https://github.com/compphoto/Intrinsic/assets/3434597/05984ff7-f481-4c0c-a156-48eb966a0505)
+![multi_illum_examples](./figures/multi_illum_examples.png)
 
 Our method can be used for complex image editing tasks such as recoloring and relighting
 
-![yellow_chair](https://github.com/compphoto/Intrinsic/assets/3434597/daa41815-0bf9-40d1-9dba-a8b062722311)
+![yellow_chair](./figures/yellow_chair.png)
 
 
 ## Setup
