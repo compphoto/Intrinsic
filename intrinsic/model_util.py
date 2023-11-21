@@ -2,13 +2,12 @@ import torch
 from altered_midas.midas_net import MidasNet
 from altered_midas.midas_net_custom import MidasNet_small
 
-def load_models(ord_path, iid_path, device='cuda'):
+def load_models(path, device='cuda'):
     """Load the ordinal network and the intrinsic decomposition network
        into a dictionary that can be used to run our pipeline
 
     params:
-        ord_path (str): the path to the weights file for the ordinal model
-        iid_path (str): the path to the weights file for the intrinsic decomposition model
+        path (str or list): the path to the combined weights file, or to each individual weights file (ordinal first, then iid)
         device (str) optional: the device to run the model on (default "cuda")
 
     returns:
@@ -18,13 +17,27 @@ def load_models(ord_path, iid_path, device='cuda'):
     """
     models = {}
 
+    if isinstance(path, list):
+        ord_state_dict = torch.load(path[0])
+        iid_state_dict = torch.load(path[1])
+    else:
+        if path == 'paper_weights':
+            combined_dict = torch.hub.load_state_dict_from_url('https://github.com/compphoto/Intrinsic/releases/download/v1.0/final_weights.pt', progress=False)
+        elif path == 'rendered_only':
+            combined_dict = torch.hub.load_state_dict_from_url('https://github.com/compphoto/Intrinsic/releases/download/v1.0/rendered_only_weights.pt', progress=False)
+        else:
+            combined_dict = torch.load(path)
+
+        ord_state_dict = combined_dict['ord_state_dict']
+        iid_state_dict = combined_dict['iid_state_dict']
+
     ord_model = MidasNet()
-    ord_model.load_state_dict(torch.load(ord_path))
+    ord_model.load_state_dict(ord_state_dict)
     ord_model.eval()
     ord_model = ord_model.to(device)
 
     iid_model = MidasNet_small(exportable=False, input_channels=5, output_channels=1)
-    iid_model.load_state_dict(torch.load(iid_path))
+    iid_model.load_state_dict(iid_state_dict)
     iid_model.eval()
     iid_model = iid_model.to(device)
 
