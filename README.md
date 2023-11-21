@@ -79,3 +79,18 @@ To run our pipeline on your own images you can use the decompose script:
 ```
 
 ```
+
+## Citation
+
+```
+@ARTICLE{careagaIntrinsic,
+  author={Chris Careaga and Ya\u{g}{\i}z Aksoy},
+  title={Intrinsic Image Decomposition via Ordinal Shading},
+  journal={ACM Trans. Graph.},
+  year={2023},
+}
+```
+
+## License
+
+The methodology presented in this work is safeguarded under intellectual property protection. For inquiries regarding licensing opportunities, kindly reach out to SFU Technology Licensing Office &#60;tlo_dir <i>ατ</i> sfu <i>δøτ</i> ca&#62; and Dr. Yağız Aksoy &#60;yagiz <i>ατ</i> sfu <i>δøτ</i> ca&#62;.
