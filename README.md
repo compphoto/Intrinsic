@@ -113,4 +113,6 @@ This will run our pipeline and output the linear albedo and shading. You can run
 
 ## License
 
+This implementation is provided for academic use only. Please cite our paper if you use this code or any of the models. 
+
 The methodology presented in this work is safeguarded under intellectual property protection. For inquiries regarding licensing opportunities, kindly reach out to SFU Technology Licensing Office &#60;tlo_dir <i>ατ</i> sfu <i>δøτ</i> ca&#62; and Dr. Yağız Aksoy &#60;yagiz <i>ατ</i> sfu <i>δøτ</i> ca&#62;.
