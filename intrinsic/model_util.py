@@ -22,9 +22,9 @@ def load_models(path, device='cuda'):
         iid_state_dict = torch.load(path[1])
     else:
         if path == 'paper_weights':
-            combined_dict = torch.hub.load_state_dict_from_url('https://github.com/compphoto/Intrinsic/releases/download/v1.0/final_weights.pt', progress=False)
+            combined_dict = torch.hub.load_state_dict_from_url('https://github.com/compphoto/Intrinsic/releases/download/v1.0/final_weights.pt', map_location=device, progress=True)
         elif path == 'rendered_only':
-            combined_dict = torch.hub.load_state_dict_from_url('https://github.com/compphoto/Intrinsic/releases/download/v1.0/rendered_only_weights.pt', progress=False)
+            combined_dict = torch.hub.load_state_dict_from_url('https://github.com/compphoto/Intrinsic/releases/download/v1.0/rendered_only_weights.pt', map_location=device, progress=True)
         else:
             combined_dict = torch.load(path)
 
