@@ -5,15 +5,13 @@ from intrinsic.pipeline import run_pipeline
 from intrinsic.model_util import load_models
 
 # load the models from the given paths
-models = load_models(
-    ord_path='./final_weights/vivid_bird_318_300.pt',
-    mrg_path='./final_weights/fluent_eon_138_200.pt'
-)
+models = load_models('paper_weights')
 
 # load an image (np float array in [0-1])
 image = load_image('/path/to/input/image')
 
-# run the model on the image using R_0 resizing
+# run the model on the image using R_0 resizing 
+# the maintain_size will output components that match the original image dims
 results = run_pipeline(
     models,
     image,
