@@ -111,7 +111,7 @@ def run_pipeline(
         else:
             combined = torch.cat((inp, bse, fll), 0).unsqueeze(0)
 
-        inv_shd = models['real_model'](combined)
+        inv_shd = models['real_model'](combined).squeeze(1)
         
         # the shading comes out in the inverse space so undo it 
         shd = uninvert(inv_shd)
