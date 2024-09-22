@@ -3,7 +3,7 @@
 This repository contains the code for the following papers: 
 
 **Colorful Diffuse Intrinsic Image Decomposition in the Wild**, [Chris Careaga](https://ccareaga.github.io/) and [Yağız Aksoy](https://yaksoy.github.io), ACM Transactions on Graphics, 2024 \
-(Paper and video coming soon!)
+[Paper](https://yaksoy.github.io/papers/TOG24-ColorfulShading.pdf) | [Supplementary](https://yaksoy.github.io/papers/TOG24-ColorfulShading-supp.pdf)
 
 **Intrinsic Image Decomposition via Ordinal Shading**, [Chris Careaga](https://ccareaga.github.io/) and [Yağız Aksoy](https://yaksoy.github.io), ACM Transactions on Graphics, 2023 \
 [Paper](https://yaksoy.github.io/papers/TOG23-Intrinsic.pdf) | [Video](https://www.youtube.com/watch?v=pWtJd3hqL3c) | [Supplementary](https://yaksoy.github.io/papers/TOG23-Intrinsic-Supp.pdf) | [Data](https://github.com/compphoto/MIDIntrinsics)
@@ -11,7 +11,7 @@ This repository contains the code for the following papers:
 ---
 
 
-We propose a method for generating high-resolution intrinsic image decompositions, for in-the-wild images. Our method consists of multiple stages. We first estimate a grayscale shading layer using our ordinal shading pipeline. We then estimate low-resolution chromaticity information to account for color illumination effects while maintaining global consistency. Using this initial colorful decomposition, we estimate a high-resolution, sparse albedo layer. We show that our decomposition allows us to train a diffuse shading network using only a single rendered indoor dataset. 
+We propose a method for generating high-resolution intrinsic image decompositions for in-the-wild images. Our method consists of multiple stages. We first estimate a grayscale shading layer using our ordinal shading pipeline. We then estimate low-resolution chromaticity information to account for colorful illumination effects while maintaining global consistency. Using this initial colorful decomposition, we estimate a high-resolution, sparse albedo layer. We show that our decomposition allows us to train a diffuse shading estimation network using only a single rendered indoor dataset. 
 
 ![representative](./figures/representative.png)
 
@@ -38,11 +38,10 @@ This will allow you to import the repository as a Python package, and use our pi
 ## Inference
 To run our pipeline on your own images you can use the decompose script:
 ```python
-from chrislib.general import view, tile_imgs, view_scale, uninvert
+from chrislib.general import uninvert
 from chrislib.data_util import load_image
 
-from intrinsic.pipeline import run_pipeline
-from intrinsic.model_util import load_models
+from intrinsic.pipeline import load_models, run_pipeline
 
 # load the models from the given paths
 models = load_models('final_weights.pt')
@@ -51,12 +50,7 @@ models = load_models('final_weights.pt')
 image = load_image('/path/to/input/image')
 
 # run the model on the image using R_0 resizing
-results = run_pipeline(
-    models,
-    image,
-    resize_conf=0.0,
-    maintain_size=True
-)
+results = run_pipeline(models, image)
 
 albedo = results['albedo']
 inv_shd = results['inv_shading']
@@ -65,16 +59,31 @@ inv_shd = results['inv_shading']
 shading = uninvert(inv_shd)
 
 ```
-This will run our pipeline and output the linear albedo and shading. You can run this in your browser as well! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb)
+This will run our pipeline and output the linear intrinsic components. You can run this in your browser as well! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb)
 
 ## Citation
 
 ```
+@ARTICLE{careagaColorful,
+ author={Chris Careaga and Ya\u{g}{\i}z Aksoy},
+ title={Colorful Diffuse Intrinsic Image Decomposition in the Wild},
+ journal={ACM Trans. Graph.},
+ year={2024},
+ volume = {43},
+ number = {6},
+ articleno = {178},
+ numpages = {12},
+}
+
 @ARTICLE{careagaIntrinsic,
-  author={Chris Careaga and Ya\u{g}{\i}z Aksoy},
-  title={Intrinsic Image Decomposition via Ordinal Shading},
-  journal={ACM Trans. Graph.},
-  year={2023},
+ author={Chris Careaga and Ya\u{g}{\i}z Aksoy},
+ title={Intrinsic Image Decomposition via Ordinal Shading},
+ journal={ACM Trans. Graph.},
+ year={2023},
+ volume = {43},
+ number = {1},
+ articleno = {12},
+ numpages = {24},
 }
 ```
 
