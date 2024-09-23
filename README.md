@@ -1,55 +1,22 @@
-# Intrinsic Image Decomposition via Ordinal Shading
-Code for the paper: Intrinsic Image Decomposition via Ordinal Shading, [Chris Careaga](https://ccareaga.github.io/) and [Yağız Aksoy](https://yaksoy.github.io), ACM Transactions on Graphics, 2023 
-### [Project Page](https://yaksoy.github.io/intrinsic) | [Paper](https://yaksoy.github.io/papers/TOG23-Intrinsic.pdf) | [Video](https://www.youtube.com/watch?v=pWtJd3hqL3c) | [Supplementary](https://yaksoy.github.io/papers/TOG23-Intrinsic-Supp.pdf) | [Data](https://github.com/compphoto/MIDIntrinsics)
+# Intrinsic Image Decomposition
 
-We propose a method for generating high-resolution intrinsic image decompositions, for in-the-wild images. Our method relies on a carefully formulated ordinal shading representation, and real-world supervision from multi-illumination data in order to predict highly accurate albedo and shading. 
+This repository contains the code for the following papers: 
 
-[![YouTube Video](./figures/thumbnail.jpg)](https://www.youtube.com/watch?v=pWtJd3hqL3c)
+**Colorful Diffuse Intrinsic Image Decomposition in the Wild**, [Chris Careaga](https://ccareaga.github.io/) and [Yağız Aksoy](https://yaksoy.github.io), ACM Transactions on Graphics, 2024 \
+[Project](https://yaksoy.github.io/ColorfulShading/) | [Paper](https://yaksoy.github.io/papers/TOG24-ColorfulShading.pdf) | [Supplementary](https://yaksoy.github.io/papers/TOG24-ColorfulShading-supp.pdf)
+
+**Intrinsic Image Decomposition via Ordinal Shading**, [Chris Careaga](https://ccareaga.github.io/) and [Yağız Aksoy](https://yaksoy.github.io), ACM Transactions on Graphics, 2023 \
+[Project](https://yaksoy.github.io/intrinsic/) | [Paper](https://yaksoy.github.io/papers/TOG23-Intrinsic.pdf) | [Video](https://www.youtube.com/watch?v=pWtJd3hqL3c) | [Supplementary](https://yaksoy.github.io/papers/TOG23-Intrinsic-Supp.pdf) | [Data](https://github.com/compphoto/MIDIntrinsics)
+ 
+---
+
+
+We propose a method for generating high-resolution intrinsic image decompositions for in-the-wild images. Our method consists of multiple stages. We first estimate a grayscale shading layer using our ordinal shading pipeline. We then estimate low-resolution chromaticity information to account for colorful illumination effects while maintaining global consistency. Using this initial colorful decomposition, we estimate a high-resolution, sparse albedo layer. We show that our decomposition allows us to train a diffuse shading estimation network using only a single rendered indoor dataset. 
+
+![representative](./figures/representative.png)
 
 
 Try out our pipeline on your own images! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb)
-
-## Method
-The inherently under-constrained and scale-invariant nature of the intrinsic decomposition makes it a challenging problem. 
-Shading, which represents complex interactions in the scene, is difficult for neural networks to predict. 
-Compounded by the scarcity of dense ground-truth data, state-of-the-art models fail at high resolutions in real-world scenarios.
-
-![intro_itw_comp_avo](./figures/intro_itw_comp_avo.png)
-
-Our method focuses on generating high-resolution shading estimations, rather than attempting to estimate shading and albedo separately. 
-Since shading values are unbounded, we develop a representation of shading values called "inverse shading" which maps the shading values into the zero-one range.
-This creates a balanced distribution of values in a well-defined range that is desirable for training neural networks.
-
-![ordinal_shd_rep](./figures/ordinal_shd_rep.jpg)
-
-Rather than directly regressing the inverse shading values, we relax the problem and aim to predict *ordinal* shading values.
-To do this, we train our network using shift- and scale-invariant loss functions. 
-This simplifies the task of shading estimation as the model does not need to estimate precise values that satisfy the core intrinsic decomposition model
-
-![ord_behavior_itw](./figures/ord_behavior_itw.png)
-
-Our ordinal estimations exhibit specific behaviors at different resolutions. 
-At low resolutions, the model can generate globally coherent predictions, but the outputs lack details.
-At high resolutions, the model can predict fine local details, but at the cost of global coherency. 
-
-![pool_table](./figures/pool_table.png)
-
-To generate a final shading estimation we combine two ordinal estimations, at low and high resolutions, with the input image and send them through a second network.
-We use the final shading estimation, and the input image in order to compute our estimated albedo. This allows us to compute losses on both shading and albedo while
-using only a single network.
-
-![network_pipeline_circles](./figures/network_pipeline_circles.jpg)
-
-We train our method on multiple rendered datasets. In order to generate real-world supervision for our method we use multi-illumination data. 
-Using our pipeline we estimate the albedo for each image in a given multi-illumination scene. By taking the median across these albedo estimations, small errors are removed resulting in a single accurate albedo.
-We use these 25,000 pseudo-ground-truth pairs as training data and continue training our pipeline.
-
-![multi_illum_examples](./figures/multi_illum_examples.png)
-
-Our method can be used for complex image editing tasks such as recoloring and relighting
-
-![yellow_chair](./figures/yellow_chair.png)
-
 
 ## Setup
 Depending on how you would like to use the code in this repository there are two options to setup the code.
@@ -71,43 +38,74 @@ This will allow you to import the repository as a Python package, and use our pi
 ## Inference
 To run our pipeline on your own images you can use the decompose script:
 ```python
-from chrislib.general import view, tile_imgs, view_scale, uninvert
+
 from chrislib.data_util import load_image
 
-from intrinsic.pipeline import run_pipeline
-from intrinsic.model_util import load_models
+from intrinsic.pipeline import load_models, run_pipeline
 
 # load the models from the given paths
-models = load_models('final_weights.pt')
+models = load_models('v2')
 
 # load an image (np float array in [0-1])
 image = load_image('/path/to/input/image')
 
 # run the model on the image using R_0 resizing
-results = run_pipeline(
-    models,
-    image,
-    resize_conf=0.0,
-    maintain_size=True
-)
+results = run_pipeline(models, image)
 
-albedo = results['albedo']
-inv_shd = results['inv_shading']
-
-# compute shading from inverse shading
-shading = uninvert(inv_shd)
+albedo = results['hr_alb']
+diffuse_shading = results['dif_shd']
+residual = results['residual']
+# + multiple other keys for different intermediate components
 
 ```
-This will run our pipeline and output the linear albedo and shading. You can run this in your browser as well! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb)
+This will run our pipeline and output the linear intrinsic components. You can run this in your browser too! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb)
+
+Here are the components stored in the resulting dictionary returned by our pipeline:
+
+| Key          | Description |
+| --------     | -------     |
+| 'image'      | input image after specified resizing scheme   |
+| 'lin_img'    | input image after undoing gamma correction |
+| 'ord_full'   | full-resolution ordinal shading estimation |
+| 'ord_full'   | base-resolution ordinal shading estimation  |
+| 'gry_shd'    | grayscale shading from ordinal pipeline     |
+| 'gry_alb'    | implied albedo from the ordinal pipeline (img / gry_shd)   |
+| 'lr_clr'     | estimated low-resolution shading chromaticity |
+| 'lr_alb'     | implied albedo after shading chromaticity estimation (img / lr_shd) |
+| 'lr_shd'     | high-resolution grayscale shading + low-res chroma   |
+| 'hr_alb'     | final high-resolution albedo estimation    |
+| 'hr_shd'     | implied shading of the final albedo (img / hr_alb) |
+| 'hr_clr'     | visualized chroma of hr_shd   |
+| 'wb_img'     | white-balanced image - hr_alb * luminance(hr_shd)    |
+| 'dif_shd'    | diffuse shading estimation   |
+| 'dif_img'    | diffuse image (hr_alb * dif_shd)    |
+| 'residual'   | residual component (img - dif_img)    |
+| 'neg_res'    | negative part of the residual component (due to saturated input pixels)    |
+| 'pos_res'    | positive part of the residual component (specularities, light sources, etc)  |
 
 ## Citation
 
 ```
+@ARTICLE{careagaColorful,
+ author={Chris Careaga and Ya\u{g}{\i}z Aksoy},
+ title={Colorful Diffuse Intrinsic Image Decomposition in the Wild},
+ journal={ACM Trans. Graph.},
+ year={2024},
+ volume = {43},
+ number = {6},
+ articleno = {178},
+ numpages = {12},
+}
+
 @ARTICLE{careagaIntrinsic,
-  author={Chris Careaga and Ya\u{g}{\i}z Aksoy},
-  title={Intrinsic Image Decomposition via Ordinal Shading},
-  journal={ACM Trans. Graph.},
-  year={2023},
+ author={Chris Careaga and Ya\u{g}{\i}z Aksoy},
+ title={Intrinsic Image Decomposition via Ordinal Shading},
+ journal={ACM Trans. Graph.},
+ year={2023},
+ volume = {43},
+ number = {1},
+ articleno = {12},
+ numpages = {24},
 }
 ```
 
