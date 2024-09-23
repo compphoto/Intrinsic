@@ -3,10 +3,10 @@
 This repository contains the code for the following papers: 
 
 **Colorful Diffuse Intrinsic Image Decomposition in the Wild**, [Chris Careaga](https://ccareaga.github.io/) and [Yağız Aksoy](https://yaksoy.github.io), ACM Transactions on Graphics, 2024 \
-[Paper](https://yaksoy.github.io/papers/TOG24-ColorfulShading.pdf) | [Supplementary](https://yaksoy.github.io/papers/TOG24-ColorfulShading-supp.pdf)
+[Project](https://yaksoy.github.io/ColorfulShading/) | [Paper](https://yaksoy.github.io/papers/TOG24-ColorfulShading.pdf) | [Supplementary](https://yaksoy.github.io/papers/TOG24-ColorfulShading-supp.pdf)
 
 **Intrinsic Image Decomposition via Ordinal Shading**, [Chris Careaga](https://ccareaga.github.io/) and [Yağız Aksoy](https://yaksoy.github.io), ACM Transactions on Graphics, 2023 \
-[Paper](https://yaksoy.github.io/papers/TOG23-Intrinsic.pdf) | [Video](https://www.youtube.com/watch?v=pWtJd3hqL3c) | [Supplementary](https://yaksoy.github.io/papers/TOG23-Intrinsic-Supp.pdf) | [Data](https://github.com/compphoto/MIDIntrinsics)
+[Project](https://yaksoy.github.io/intrinsic/) | [Paper](https://yaksoy.github.io/papers/TOG23-Intrinsic.pdf) | [Video](https://www.youtube.com/watch?v=pWtJd3hqL3c) | [Supplementary](https://yaksoy.github.io/papers/TOG23-Intrinsic-Supp.pdf) | [Data](https://github.com/compphoto/MIDIntrinsics)
  
 ---
 
@@ -58,7 +58,30 @@ residual = results['residual']
 # + multiple other keys for different intermediate components
 
 ```
-This will run our pipeline and output the linear intrinsic components. You can run this in your browser as well! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb)
+This will run our pipeline and output the linear intrinsic components. You can run this in your browser too! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb)
+
+Here are the components stored in the resulting dictionary returned by our pipeline:
+
+| Key          | Description |
+| --------     | -------     |
+| 'image'      | input image after specified resizing scheme   |
+| 'lin_img'    | input image after undoing gamma correction |
+| 'ord_full'   | full-resolution ordinal shading estimation |
+| 'ord_full'   | base-resolution ordinal shading estimation  |
+| 'gry_shd'    | grayscale shading from ordinal pipeline     |
+| 'gry_alb'    | implied albedo from the ordinal pipeline (img / gry_shd)   |
+| 'lr_clr'     | estimated low-resolution shading chromaticity |
+| 'lr_alb'     | implied albedo after shading chromaticity estimation (img / lr_shd) |
+| 'lr_shd'     | high-resolution grayscale shading + low-res chroma   |
+| 'hr_alb'     | final high-resolution albedo estimation    |
+| 'hr_shd'     | implied shading of the final albedo (img / hr_alb) |
+| 'hr_clr'     | visualized chroma of hr_shd   |
+| 'wb_img'     | white-balanced image - hr_alb * luminance(hr_shd)    |
+| 'dif_shd'    | diffuse shading estimation   |
+| 'dif_img'    | diffuse image (hr_alb * dif_shd)    |
+| 'residual'   | residual component (img - dif_img)    |
+| 'neg_res'    | negative part of the residual component (due to saturated input pixels)    |
+| 'pos_res'    | positive part of the residual component (specularities, light sources, etc)  |
 
 ## Citation
 
