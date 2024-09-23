@@ -57,9 +57,14 @@ def load_models(path, stage=4, device='cuda'):
 
             ord_state_dict = combined_dict['ord_state_dict']
             iid_state_dict = combined_dict['iid_state_dict']
-        else:
+        elif path == 'v2':
             # TODO: otherwise we are loading the colorful version of the pipeline which has different logic
-            pass
+            base_url = 'https://github.com/compphoto/Intrinsic/releases/download/v2.0/'
+            ord_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_0.pt' , map_location=device, progress=True)
+            iid_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_1.pt' , map_location=device, progress=True)
+            col_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_2.pt' , map_location=device, progress=True)
+            alb_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_3.pt' , map_location=device, progress=True)
+            dif_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_4.pt' , map_location=device, progress=True)
 
 
     elif isinstance(path, list):
@@ -106,7 +111,6 @@ def load_models(path, stage=4, device='cuda'):
 
 
     return models
-
 
 def run_gray_pipeline(
         models,
