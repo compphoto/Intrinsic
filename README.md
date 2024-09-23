@@ -15,6 +15,9 @@ We propose a method for generating high-resolution intrinsic image decomposition
 
 ![representative](./figures/representative.png)
 
+Our estimated components unlock multiple illumination-aware editing operations such as per-pixel white balancing and specularity removal:
+
+![applications](./figures/app_teaser2.jpg)
 
 Try out our pipeline on your own images! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb)
 
