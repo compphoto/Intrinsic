@@ -38,13 +38,13 @@ This will allow you to import the repository as a Python package, and use our pi
 ## Inference
 To run our pipeline on your own images you can use the decompose script:
 ```python
-from chrislib.general import uninvert
+
 from chrislib.data_util import load_image
 
 from intrinsic.pipeline import load_models, run_pipeline
 
 # load the models from the given paths
-models = load_models('final_weights.pt')
+models = load_models('v2')
 
 # load an image (np float array in [0-1])
 image = load_image('/path/to/input/image')
@@ -52,11 +52,10 @@ image = load_image('/path/to/input/image')
 # run the model on the image using R_0 resizing
 results = run_pipeline(models, image)
 
-albedo = results['albedo']
-inv_shd = results['inv_shading']
-
-# compute shading from inverse shading
-shading = uninvert(inv_shd)
+albedo = results['hr_alb']
+diffuse_shading = results['dif_shd']
+residual = results['residual']
+# + multiple other keys for different intermediate components
 
 ```
 This will run our pipeline and output the linear intrinsic components. You can run this in your browser as well! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb)
