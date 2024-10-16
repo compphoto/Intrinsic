@@ -3,7 +3,7 @@
 This repository contains the code for the following papers: 
 
 **Colorful Diffuse Intrinsic Image Decomposition in the Wild**, [Chris Careaga](https://ccareaga.github.io/) and [Yağız Aksoy](https://yaksoy.github.io), ACM Transactions on Graphics, 2024 \
-[Project](https://yaksoy.github.io/ColorfulShading/) | [Paper](https://yaksoy.github.io/papers/TOG24-ColorfulShading.pdf) | [Supplementary](https://yaksoy.github.io/papers/TOG24-ColorfulShading-supp.pdf)
+[Project](https://yaksoy.github.io/ColorfulShading/) | [Paper](https://yaksoy.github.io/papers/TOG24-ColorfulShading.pdf) | [Supplementary](https://yaksoy.github.io/papers/TOG24-ColorfulShading-supp.pdf) | [Demo](https://huggingface.co/spaces/ccareaga/Intrinsic)
 
 **Intrinsic Image Decomposition via Ordinal Shading**, [Chris Careaga](https://ccareaga.github.io/) and [Yağız Aksoy](https://yaksoy.github.io), ACM Transactions on Graphics, 2023 \
 [Project](https://yaksoy.github.io/intrinsic/) | [Paper](https://yaksoy.github.io/papers/TOG23-Intrinsic.pdf) | [Video](https://www.youtube.com/watch?v=pWtJd3hqL3c) | [Supplementary](https://yaksoy.github.io/papers/TOG23-Intrinsic-Supp.pdf) | [Data](https://github.com/compphoto/MIDIntrinsics)
@@ -19,7 +19,9 @@ Our estimated components unlock multiple illumination-aware editing operations s
 
 ![applications](./figures/app_teaser2.jpg)
 
-Try out our pipeline on your own images! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb)
+Try out our pipeline on your own images in Colab [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb) or on <a href="https://huggingface.co/spaces/ccareaga/Intrinsic">
+<img alt="Spaces" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue">
+</a>
 
 ## Setup
 Depending on how you would like to use the code in this repository there are two options to setup the code.
@@ -61,7 +63,12 @@ residual = results['residual']
 # + multiple other keys for different intermediate components
 
 ```
-This will run our pipeline and output the linear intrinsic components. You can run this in your browser too! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb)
+This will run our pipeline and output the linear intrinsic components. 
+
+You can run this in your browser too! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/compphoto/Intrinsic/blob/main/intrinsic_inference.ipynb) or <a href="https://huggingface.co/spaces/ccareaga/Intrinsic">
+<img alt="Spaces" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue">
+</a>
+
 
 Here are the components stored in the resulting dictionary returned by our pipeline:
 
