@@ -24,7 +24,16 @@ V1_DICT = {
     'rendered_only' : 'https://github.com/compphoto/Intrinsic/releases/download/v1.0/rendered_only_weights.pt'
 }
 
-def load_models(path, stage=4, device='cuda'):
+def load_decompile(path):
+    """call torch.load then convert the loaded keys from torch.compile to regular"""
+    compiled_dict = torch.load(path)
+
+    remove_prefix = '_orig_mod.'
+    model_dict = {k[len(remove_prefix):] if k.startswith(remove_prefix) else k: v for k, v in compiled_dict.items()}
+
+    return model_dict
+    
+def load_models(path, stage=4, device='cuda', compiled=False, chroma_dpt=False, alb_residual=False):
     """The networks as part of our intrinsic decomposition pipeline. Since the pipeline consists of stages,
     can load the models up to a specific stage in the pipeline
 
@@ -45,6 +54,8 @@ def load_models(path, stage=4, device='cuda'):
     """
     models = {}
 
+    load_func = load_decompile if compiled else torch.load
+    
     if isinstance(stage, str):
         stage = STAGE_DICT[stage]
 
@@ -58,23 +69,30 @@ def load_models(path, stage=4, device='cuda'):
             ord_state_dict = combined_dict['ord_state_dict']
             iid_state_dict = combined_dict['iid_state_dict']
         elif path == 'v2':
-            # TODO: otherwise we are loading the colorful version of the pipeline which has different logic
             base_url = 'https://github.com/compphoto/Intrinsic/releases/download/v2.0/'
             ord_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_0.pt' , map_location=device, progress=True)
             iid_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_1.pt' , map_location=device, progress=True)
             col_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_2.pt' , map_location=device, progress=True)
             alb_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_3.pt' , map_location=device, progress=True)
             dif_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_4.pt' , map_location=device, progress=True)
+        elif path == 'v2.1':
+            base_url = 'https://github.com/compphoto/Intrinsic/releases/download/v2.1/'
+            ord_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_0.pt' , map_location=device, progress=True)
+            iid_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_1.pt' , map_location=device, progress=True)
+            col_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_2.pt' , map_location=device, progress=True)
+            alb_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_3.pt' , map_location=device, progress=True)
+            dif_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_4.pt' , map_location=device, progress=True)
 
+            alb_residual = True
 
     elif isinstance(path, list):
 
-        ord_state_dict = torch.load(path[0])
-        iid_state_dict = torch.load(path[1])
+        ord_state_dict = load_func(path[0])
+        iid_state_dict = load_func(path[1])
 
-        if stage >= 2: col_state_dict = torch.load(path[2])
-        if stage >= 3: alb_state_dict = torch.load(path[3])
-        if stage >= 4: dif_state_dict = torch.load(path[4])
+        if stage >= 2: col_state_dict = load_func(path[2])
+        if stage >= 3: alb_state_dict = load_func(path[3])
+        if stage >= 4: dif_state_dict = load_func(path[4])
 
     ord_model = MidasNet()
     ord_model.load_state_dict(ord_state_dict)
@@ -89,14 +107,18 @@ def load_models(path, stage=4, device='cuda'):
     models['iid_model'] = iid_model
     
     if stage >= 2:
-        col_model = MidasNet(activation='sigmoid', input_channels=7, output_channels=2)
+        if chroma_dpt:
+            col_model = DPTDepthModel(in_chan=7, out_chan=2)
+        else:
+            col_model = MidasNet(activation='sigmoid', input_channels=7, output_channels=2)
+
         col_model.load_state_dict(col_state_dict)
         col_model.eval()
         col_model = col_model.to(device)
         models['col_model'] = col_model
     
     if stage >= 3:
-        alb_model = MidasNet(activation='sigmoid', input_channels=9, output_channels=3)
+        alb_model = MidasNet(activation='sigmoid', input_channels=9, output_channels=3, last_residual=alb_residual)
         alb_model.load_state_dict(alb_state_dict)
         alb_model.eval()
         alb_model = alb_model.to(device)
@@ -108,7 +130,6 @@ def load_models(path, stage=4, device='cuda'):
         dif_model.eval()
         dif_model = dif_model.to(device)
         models['dif_model'] = dif_model
-
 
     return models
 
