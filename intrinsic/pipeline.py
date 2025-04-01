@@ -322,6 +322,7 @@ def run_pipeline(models, img_arr, stage=4, resize_conf=0.0, base_size=384, linea
     lr_shd = to2np(rough_shd.squeeze(0))
     wb_img = (lr_alb * get_brightness(lr_shd)).clip(0, 1)
 
+    results['iuv_shd'] = to2np(iuv_shd.squeeze(0))
     results['lr_clr'] = lr_clr
     results['lr_alb'] = lr_alb
     results['lr_shd'] = lr_shd
