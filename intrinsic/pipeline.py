@@ -69,6 +69,7 @@ def load_models(path, stage=4, device='cuda', compiled=False, chroma_dpt=False, 
             ord_state_dict = combined_dict['ord_state_dict']
             iid_state_dict = combined_dict['iid_state_dict']
         elif path == 'v2':
+            print("loading v2 weights")
             base_url = 'https://github.com/compphoto/Intrinsic/releases/download/v2.0/'
             ord_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_0.pt' , map_location=device, progress=True)
             iid_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_1.pt' , map_location=device, progress=True)
@@ -76,6 +77,7 @@ def load_models(path, stage=4, device='cuda', compiled=False, chroma_dpt=False, 
             alb_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_3.pt' , map_location=device, progress=True)
             dif_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_4.pt' , map_location=device, progress=True)
         elif path == 'v2.1':
+            print("loading v2.1 weights")
             base_url = 'https://github.com/compphoto/Intrinsic/releases/download/v2.1/'
             ord_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_0_v21.pt' , map_location=device, progress=True)
             iid_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_1_v21.pt' , map_location=device, progress=True)
