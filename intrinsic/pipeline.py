@@ -77,11 +77,11 @@ def load_models(path, stage=4, device='cuda', compiled=False, chroma_dpt=False, 
             dif_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_4.pt' , map_location=device, progress=True)
         elif path == 'v2.1':
             base_url = 'https://github.com/compphoto/Intrinsic/releases/download/v2.1/'
-            ord_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_0.pt' , map_location=device, progress=True)
-            iid_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_1.pt' , map_location=device, progress=True)
-            col_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_2.pt' , map_location=device, progress=True)
-            alb_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_3.pt' , map_location=device, progress=True)
-            dif_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_4.pt' , map_location=device, progress=True)
+            ord_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_0_v21.pt' , map_location=device, progress=True)
+            iid_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_1_v21.pt' , map_location=device, progress=True)
+            col_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_2_v21.pt' , map_location=device, progress=True)
+            alb_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_3_v21.pt' , map_location=device, progress=True)
+            dif_state_dict = torch.hub.load_state_dict_from_url(base_url + 'stage_4_v21.pt' , map_location=device, progress=True)
 
             alb_residual = True
 
